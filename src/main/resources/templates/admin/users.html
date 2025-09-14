@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Mantenimiento de Usuarios</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="container mt-4">
+        <h2>👤 Usuarios</h2>
+        <a class="btn btn-success mb-3" th:href="@{/admin/users/new}">➕ Nuevo Usuario</a>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Multiplicación</th>
+                <th>Suma</th>
+                <th>Dígitos Máx.</th>
+                <th>Puntos</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.username}"></td>
+                <td th:text="${user.role.name}"></td>
+                <td><input type="checkbox" th:checked="${user.multiplicationEnabled}" disabled></td>
+                <td><input type="checkbox" th:checked="${user.additionEnabled}" disabled></td>
+                <td th:text="${user.additionMaxDigits}"></td>
+                <td th:text="${user.points}"></td>
+                <td>
+                    <a class="btn btn-sm btn-primary" th:href="@{'/admin/users/edit/' + ${user.id}}">✏️</a>
+                    <form th:action="@{'/admin/users/delete/' + ${user.id}}" method="post" style="display:inline;">
+                        <button class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro?')">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

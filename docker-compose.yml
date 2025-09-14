@@ -1,0 +1,30 @@
+version: "3.8"
+services:
+  math-db:
+    image: mysql:8.0
+    container_name: math-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: mathdb
+      MYSQL_USER: cdelossantos
+      MYSQL_PASSWORD: cdelossantos
+    ports:
+      - "3306:3306"
+    volumes:
+      - math_db_data:/var/lib/mysql
+
+  dls-maths-app:
+    container_name: dls-maths-app
+    depends_on:
+      - math-db
+    ports:
+      - "8070:8070"
+    environment:
+      SERVER_PORT: 8070
+      SPRING_DATASOURCE_URL: jdbc:mysql://math-db:3306/mathdb?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: cdelossantos
+      SPRING_DATASOURCE_PASSWORD: cdelossantos
+      SPRING_PROFILES_ACTIVE: mysql
+volumes:
+  math_db_data:

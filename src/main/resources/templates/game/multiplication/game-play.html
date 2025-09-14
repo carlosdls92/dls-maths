@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Juego de Multiplicación</title>
+
+</head>
+<body>
+
+<section layout:fragment="content">
+    <div class="container">
+        <h2 class="mb-4">Pregunta [[${current}]] / [[${total}]]</h2>
+
+        <div class="row">
+            <!--    <img th:each="i : ${#numbers.sequence(1,question.b)}" th:src="@{/images/${question.a}.jpg}" th:alt="${i}">-->
+            <img th:each="i : ${#numbers.sequence(1,question.b)}"
+                 th:src="@{'/images/' + ${question.a} + '.jpg'}"
+                 class="col-1"
+                 th:alt="${i}" />
+
+        </div>
+
+        <h3 class="mb-3 text-center">¿Cuánto es [[${question.a}]] × [[${question.b}]]?</h3>
+
+        <form id="answerForm" method="post" th:action="@{/multiplication/submit}">
+            <input type="hidden" name="index" th:value="${current}" />
+            <input type="hidden" name="a" th:value="${question.a}" />
+            <input type="hidden" name="b" th:value="${question.b}" />
+            <input type="hidden" name="time" id="timeToAnswer"/>
+            <!--    <div class="row justify-content-center">-->
+            <!--        <div class="col-6 d-grid gap-3">-->
+            <!--            <button type="button" class="btn btn-secondary answer-btn" onclick="submitAnswer(this)" th:text="${question.a * question.b}">respuesta</button>-->
+            <!--            <button type="button" class="btn btn-secondary answer-btn" onclick="submitAnswer(this)" th:text="${(question.a + 1) * question.b}">respuesta</button>-->
+            <!--            <button type="button" class="btn btn-secondary answer-btn" onclick="submitAnswer(this)" th:text="${(question.a - 1) * question.b}">respuesta</button>-->
+            <!--            <button type="button" class="btn btn-secondary answer-btn" onclick="submitAnswer(this)" th:text="${(question.a + 2) * question.b}">respuesta</button>-->
+            <!--        </div>-->
+            <!--    </div>-->
+            <input type="hidden" id="answerInput" name="answer" />
+
+            <div id="options" class="text-center">
+                <div th:each="answer : ${question.possibleAnswers}" class="form-check-inline">
+                    <label th:attr="data-value=${answer}" class="option-label square-btn btn-lg btn btn-outline-secondary m-2 answer-btn" onclick="submitAnswer(this)">
+                        <input type="radio" name="option" class="" th:value="${answer}" style="display: none;"/>
+                        <span th:text="${answer}"></span>
+                    </label>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="mt-4 text-center" th:if="${enableTimer}">
+            <span>Tiempo restante: <strong id="timer" th:text="${timeLimit}">5</strong> segundos</span>
+        </div>
+    </div>
+    <script>
+        // let timeLeft = 5;
+        let timeLeft = [[${timeLimit}]];
+        let countdown = null;
+        if([[${enableTimer}]]){
+            const timerEl = document.getElementById("timer");
+
+            countdown = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    document.getElementById("timeToAnswer").value = timeLeft;
+                    document.getElementById("answerInput").value = -1; // No respondió
+                    document.getElementById("answerForm").submit();
+                }
+            }, 1000);
+        }
+
+        function submitAnswer(btn) {
+            if([[${enableTimer}]]) {
+                clearInterval(countdown);
+            }
+            const answer = btn.innerText;
+            document.getElementById("answerInput").value = answer;
+            document.getElementById("timeToAnswer").value = timeLeft;
+
+            // Marcar botones
+            const buttons = document.querySelectorAll(".answer-btn");
+            buttons.forEach(b => {
+                const val = parseInt(b.innerText);
+                if (val === [[${question.a * question.b}]]) {
+                    b.classList.add("correct");
+                }
+                if (b === btn && val !== [[${question.a * question.b}]]) {
+                    b.classList.add("wrong");
+                }
+                b.disabled = true;
+            });
+
+            setTimeout(() => {
+                document.getElementById("answerForm").submit();
+            }, 1000);
+        }
+    </script>
+</section>
+
+</body>
+</html>
+

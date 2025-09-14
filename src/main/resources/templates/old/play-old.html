@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Multiplicación</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="container mt-5">
+<h2>¿Cuánto es <span th:text="${a}"></span> × <span th:text="${b}"></span>?</h2>
+<form method="post" th:action="@{/game/answer}" id="answerForm">
+    <input type="hidden" name="correctAnswer" th:value="${a * b}"/>
+    <div class=" form-check-inline" th:each="opt : ${options}">
+        <input type="radio" class="btn-check" name="answer" th:id="${'option'+opt}" th:value="${opt}" autocomplete="off">
+        <label class="btn btn-secondary col-2 m-2 btn-lg square-btn" th:for="${'option'+opt}" th:text="${opt}"></label>
+
+<!--        <label><input type="radio" name="answer" th:value="${opt}"/> <span th:text="${opt}"></span></label><br>-->
+    </div>
+    <button class="btn btn-primary mt-2" type="submit">Responder</button>
+</form>
+
+<div class="mt-3">
+    <strong>Tiempo restante: <span id="countdown" th:text="${timeLimit}">5</span> segundos</strong>
+</div>
+
+<script>
+    let seconds = [[${timeLimit}]];
+    const countdown = document.getElementById("countdown");
+    const form = document.getElementById("answerForm");
+
+    const timer = setInterval(() => {
+        countdown.textContent = --seconds;
+        if (seconds <= 0) {
+            clearInterval(timer);
+            form.submit();
+        }
+    }, 1000);
+</script>
+</body>
+</html>

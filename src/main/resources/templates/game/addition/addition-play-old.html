@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Juego de Sumas</title>
+
+</head>
+<body>
+
+<section layout:fragment="content">
+    <div class="container mt-4">
+        <h2>🧠 Sumas para <span th:text="${user.username}">Usuario</span></h2>
+
+        <form method="post" action="/sumas/resolver">
+            <table class="table table-bordered">
+                <thead>
+                <tr><th>#</th><th>Pregunta</th><th>Tu respuesta</th></tr>
+                </thead>
+                <tbody>
+                <tr th:each="q, i : ${questions}">
+                    <td th:text="${i.index + 1}"></td>
+                    <td th:text="${q.questionText}"></td>
+                    <td>
+                        <input type="number" name="answers" class="form-control" required>
+                        <input type="hidden" th:name="questions[__${i.index}__]" th:value="${q.correctAnswer}">
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    </div>
+</section>
+
+</body>
+</html>
+

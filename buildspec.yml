@@ -1,0 +1,36 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: "eu-north-1"          # <-- ajusta si usas otra región
+    ECR_REPO: "dls-maths-app"        # <-- tu repo de ECR
+
+phases:
+  pre_build:
+    commands:
+      - echo "Login ECR"
+      - set -euxo pipefail
+      - : "${AWS_DEFAULT_REGION:=$AWS_REGION}"
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - ECR_URI="$ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO"
+      - echo "Login ECR: $ECR_URI"
+      - aws ecr get-login-password --region "$AWS_REGION" | docker login --username AWS --password-stdin "$ECR_URI"
+      - COMMIT_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}
+  build:
+    commands:
+      - echo "Build & push image"
+      - docker build -t "$ECR_URI:$COMMIT_TAG" .
+      - docker push "$ECR_URI:$COMMIT_TAG"
+  post_build:
+    commands:
+      - echo "Empaquetando artefacto para CodeDeploy"
+      - mkdir -p artifact/scripts
+      - echo "IMAGE_URI=$ECR_URI:$COMMIT_TAG" > artifact/image.env
+      - cp docker-compose.yml artifact/
+      - cp deploy/appspec.yml artifact/
+      - cp deploy/scripts/deploy.sh artifact/scripts/
+
+  artifacts:
+    files:
+      - artifact/**/*
+    discard-paths: no

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Seleccionar Modo</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="container mt-5">
+<h2>Selecciona el modo de juego</h2>
+<br>
+
+<div class="row text-center">
+    <!-- Botones para cada tabla -->
+    <div class="col-3 mb-3" th:each="mode : ${modes}">
+        <a th:href="@{/game/start(mode=${mode.value == 'ALL'?'ALL':'SPECIFIC'}, table=${mode.value == 'ALL'?'0':mode.value})}"
+           class="btn btn-outline-secondary btn-lg w-100 square-btn">
+            <span th:text="${mode.description}">3</span>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

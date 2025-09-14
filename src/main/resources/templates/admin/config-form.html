@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Editar Configuración</title>
+</head>
+<body>
+
+<section layout:fragment="content">
+    <div class="container">
+        <h2 th:text="${config.id != null ? '✏️ Editar Configuración' : '➕ Nueva Configuración'}"></h2>
+        <form th:action="@{/admin/configs/save}" method="post" th:object="${config}">
+            <input type="hidden" th:field="*{id}"/>
+            <div class="input-group">
+                <span class="input-group-text">Descripcion</span>
+                <input type="text"
+                       aria-label="Descripcion"
+                       class="form-control"
+                       th:field="*{description}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Tiempo por pregunta (segundos)</span>
+                <input type="number"
+                       aria-label="Tiempo por pregunta (segundos)"
+                       class="form-control"
+                       th:field="*{timeLimitSeconds}">
+            </div>
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" th:field="*{enableTimer}"/>
+                <label class="form-check-label">Activar cronómetro</label>
+            </div>
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" th:field="*{enableAllTables}"/>
+                <label class="form-check-label">Activar Todas las tablas</label>
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Tabla Inicio</span>
+                <input type="number"
+                       aria-label="Tabla Inicio"
+                       class="form-control"
+                       th:field="*{rangeIni}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Tabla Fin</span>
+                <input type="number"
+                       aria-label="Tabla Inicio"
+                       class="form-control"
+                       th:field="*{rangeFin}">
+            </div>
+            <input type="hidden" name="rangeTables" id="rangeTables" th:field="*{rangeTables}">
+            <select id="sortFields" name="sortFields" size="12" class="form-select" multiple>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
+
+            <div class="input-group">
+                <span class="input-group-text">Nro. Preguntas</span>
+                <input type="number"
+                       aria-label="Tabla Inicio"
+                       class="form-control"
+                       th:field="*{numberQuestions}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-text">Nro. Respuestas</span>
+                <input type="number"
+                       aria-label="Tabla Inicio"
+                       class="form-control"
+                       th:field="*{numberAnswers}">
+            </div>
+            <div>
+<!--                <label class="input-group-text" for="customRange4">Porcentaje para puntos</label>-->
+<!--                <input type="number"-->
+<!--                       aria-label="Descripcion"-->
+<!--                       class="form-control"-->
+<!--                       th:field="*{percentageToPoints}">-->
+                <label for="customRange4" class="form-label">Porcentaje para puntos</label>
+                <input type="range" class="form-control form-range" min="0" step="5" max="100"
+                       th:field="*{percentageToPoints}"
+                       th:value="*{percentageToPoints}"
+                       id="customRange4">
+                <output for="customRange4" id="rangeValue" aria-hidden="true"></output>
+            </div>
+
+            <button class="btn btn-primary mt-3">Guardar</button>
+            <a th:href="@{/admin/configs}" class="btn btn-secondary mt-3">🔙 Volver</a>
+        </form>
+    </div>
+    <script>
+        function beforeSubmit() {
+            const select = document.getElementById("sortFields");
+            const hidden = document.getElementById("rangeTables");
+            const selectedValues = Array.from(select.selectedOptions).map(option => option.value);
+            hidden.value = selectedValues.join(",");
+        }
+
+        // Opcional: enganchar al evento submit de tu formulario
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            if (form) {
+                form.addEventListener("submit", function (event) {
+                    beforeSubmit();
+                });
+            }
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const hiddenInput = document.getElementById("rangeTables");
+            const select = document.getElementById("sortFields");
+
+            if (hiddenInput && select && hiddenInput.value) {
+                const selectedValues = hiddenInput.value.split(",");
+
+                Array.from(select.options).forEach(option => {
+                    if (selectedValues.includes(option.value)) {
+                        option.selected = true;
+                    }
+                });
+            }
+        });
+        // This is an example script, please modify as needed
+        const rangeInput = document.getElementById('customRange4');
+        const rangeOutput = document.getElementById('rangeValue');
+
+        // Set initial value
+        rangeOutput.textContent = rangeInput.value+'%';
+
+        rangeInput.addEventListener('input', function() {
+            rangeOutput.textContent = this.value+'%';
+        });
+    </script>
+</section>
+
+</body>
+</html>
+

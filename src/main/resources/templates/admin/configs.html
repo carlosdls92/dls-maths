@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Mantenimiento de Configuraciones</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="container mt-4">
+        <h2>👤 Configuraciones</h2>
+        <a class="btn btn-success mb-3" th:href="@{/admin/configs/new}">➕ Nueva Configuracion</a>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>Descripcion</th>
+                <th>Limite (Seg)</th>
+                <th>Limite de Tiempo</th>
+                <th>Rango inicial</th>
+                <th>Rango final</th>
+                <th>Rango de Tablas</th>
+                <th>Porcentaje para suma de puntos</th>
+                <th>Todas las tablas</th>
+                <th>Numero de preguntas</th>
+                <th>Numero de respuestas</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="config : ${configs}">
+                <td th:text="${config.description}"></td>
+                <td th:text="${config.timeLimitSeconds}"></td>
+                <td><input type="checkbox" th:checked="${config.enableTimer}" disabled></td>
+                <td th:text="${config.rangeIni}"></td>
+                <td th:text="${config.rangeFin}"></td>
+                <td th:text="${config.rangeTables}"></td>
+                <td th:text="${config.percentageToPoints==null?'0 ':config.percentageToPoints+' %'}"></td>
+                <td><input type="checkbox" th:checked="${config.enableAllTables}" disabled></td>
+                <td th:text="${config.numberQuestions}"></td>
+                <td th:text="${config.numberAnswers}"></td>
+                <td>
+                    <a class="btn btn-sm btn-primary" th:href="@{'/admin/configs/edit/' + ${config.id}}">✏️</a>
+                    <form th:action="@{'/admin/configs/delete/' + ${config.id}}" method="post" style="display:inline;">
+                        <button class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro?')">🗑️</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

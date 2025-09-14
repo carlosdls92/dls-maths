@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title>Editar Usuario</title>
+</head>
+
+<body>
+<section layout:fragment="content">
+    <div class="container mt-4">
+        <h2 th:text="${userForm.id != null ? '✏️ Editar Usuario' : '➕ Nuevo Usuario'}"></h2>
+        <form th:action="@{/admin/users/save}" th:object="${userForm}" method="post">
+            <input type="hidden" th:field="*{id}"/>
+            <div class="mb-3">
+                <label>Usuario</label>
+                <input type="text" th:field="*{username}" class="form-control" required/>
+            </div>
+            <div class="mb-3" th:if="${userForm.id == null or userForm.role.name == 'ADMIN'}">
+                <label>Contraseña</label>
+                <input type="password" th:field="*{password}" class="form-control"/>
+            </div>
+            <div class="mb-3">
+                <label>Rol</label>
+                <select th:field="*{role}" class="form-select">
+                    <option value="CHILD">Niño</option>
+                    <option value="ADMIN">Administrador</option>
+                </select>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" th:field="*{multiplicationEnabled}" id="multiplyEnabled">
+                <label class="form-check-label" for="multiplyEnabled">Multiplicación habilitada</label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" th:field="*{additionEnabled}" id="additionEnabled">
+                <label class="form-check-label" for="additionEnabled">Suma habilitada</label>
+            </div>
+            <div class="mb-3">
+                <label>Dígitos máximos para suma</label>
+                <select th:field="*{additionMaxDigits}" class="form-select">
+                    <option value="1">1 dígito</option>
+                    <option value="2">2 dígitos</option>
+                    <option value="3">3 dígitos</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>Puntos</label>
+                <input type="text" th:field="*{points}" class="form-control"/>
+            </div>
+
+            <button type="submit" class="btn btn-primary">💾 Guardar</button>
+            <a th:href="@{/admin/users}" class="btn btn-secondary">🔙 Volver</a>
+        </form>
+    </div>
+</section>
+</body>
+</html>

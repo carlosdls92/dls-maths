@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Resumen del Juego</title>
+
+</head>
+<body>
+
+<section layout:fragment="content">
+    <div class="container">
+        <h2 class="mb-4" th:text="${'Resumen del Juego: '+percent+'% correctas.'}"></h2>
+
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <!--        <th class="text-center">#</th>-->
+                <th class="text-center">Pregunta</th>
+                <th class="text-center">Tu Respuesta</th>
+                <th class="text-center">Respuesta Correcta</th>
+                <th class="text-center">Tiempo</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r, stat : ${answers}" th:class="${(r.correct ? 'correct-row' : 'wrong-row')}">
+                <!--        <td th:class="${'text-center '+(r.givenAnswer != r.a * r.b ?'table-danger':'')}" th:text="${stat.count}">1</td>-->
+                <td th:class="${'text-center '+(!r.correct ?'table-danger':'table-success')}" th:text="${r.a + ' x ' + r.b}">8 x 9</td>
+                <td th:class="${'text-center '+(!r.correct ?'table-danger':'table-success')}" th:text="${r.givenAnswer}">72</td>
+                <td class="table-success text-center" th:text="${r.correctAnswer}">72</td>
+                <td class="text-center" th:text="${r.timeToAnswer+' seg'}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-center mt-4">
+            <a href="/game/select" class="btn btn-primary">Elegir otro modo</a>
+            <a href="/multiplication/start?mode=ALL" th:if="${operation == 'MULTIPLICATION'}" class="btn btn-success">Jugar otra vez</a>
+            <a href="/addition/start" th:if="${operation == 'ADDITION'}" class="btn btn-success">Jugar otra vez</a>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
+

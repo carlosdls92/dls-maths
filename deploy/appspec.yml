@@ -1,0 +1,10 @@
+version: 0.0
+os: linux
+files:
+  - source: deploy/
+    destination: /opt/codedeploy/dls-maths-app
+hooks:
+  AfterInstall:
+    - location: deploy/scripts/deploy.sh
+      timeout: 600
+      runas: root

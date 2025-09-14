@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ejercicio</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="container mt-5">
+<h4>Pregunta [[${questionNumber}]] de [[${totalQuestions}]]</h4>
+<h2>¿Cuánto es <span th:text="${a}"></span> × <span th:text="${b}"></span>?</h2>
+
+<form id="answerForm" method="post" th:action="@{/game/answer-sequence}">
+    <input type="hidden" name="correctAnswer" th:value="${a * b}"/>
+    <input type="hidden" name="answer" id="answerInput"/>
+
+    <div id="options">
+        <div th:each="opt : ${options}" class="form-check-inline">
+            <label th:attr="data-value=${opt}" class="option-label square-btn btn-lg btn btn-outline-secondary m-2">
+                <input type="radio" name="option" class="" th:value="${opt}" style="display: none;"/>
+                <span th:text="${opt}"></span>
+            </label>
+        </div>
+    </div>
+</form>
+
+
+<div class="mt-3">
+    <strong>Tiempo restante: <span id="countdown" th:text="${timeLimit}">5</span> segundos</strong>
+</div>
+
+<script>
+    const correctAnswer = [[${a * b}]];
+    const answerForm = document.getElementById("answerForm");
+    const options = document.querySelectorAll(".option-label");
+
+    options.forEach(label => {
+        label.addEventListener("click", () => {
+            const selected = parseInt(label.getAttribute("data-value"));
+            document.getElementById("answerInput").value = selected;
+
+            // Deshabilitar clicks
+            options.forEach(l => l.classList.add("disabled"));
+
+            if (selected === correctAnswer) {
+                label.classList.remove("btn-outline-secondary");
+                label.classList.add("btn-success");
+            } else {
+                label.classList.remove("btn-outline-secondary");
+                label.classList.add("btn-danger");
+
+                // Resaltar la opción correcta
+                options.forEach(l => {
+                    const val = parseInt(l.getAttribute("data-value"));
+                    if (val === correctAnswer) {
+                        l.classList.remove("btn-outline-secondary");
+                        l.classList.add("btn-success");
+                    }
+                });
+            }
+
+            // Esperar 1.5 segundos y enviar
+            setTimeout(() => {
+                answerForm.submit();
+            }, 1500);
+        });
+    });
+</script>
+
+</body>
+</html>

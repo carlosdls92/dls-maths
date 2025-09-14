@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Resultado</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+<h2 th:if="${isCorrect}" class="text-success">¡Correcto! 🎉</h2>
+<h2 th:unless="${isCorrect}" class="text-danger">Incorrecto 😞. Era <span th:text="${correctAnswer}"></span></h2>
+<a th:href="@{/game/select-mode}" class="btn btn-secondary mt-3">Volver a elegir</a>
+<a th:href="@{/game/play}" class="btn btn-primary mt-3">Otro intento</a>
+</body>
+</html>

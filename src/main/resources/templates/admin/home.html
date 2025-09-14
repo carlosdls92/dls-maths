@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title>Bienvenido</title>
+</head>
+<body>
+
+<section layout:fragment="content">
+    <div class="container">
+        <span>Bienvenido Admin</span>
+        <img class="col-12" th:src="@{'/images/welcome.png'}" alt="Bienvenido Admin">
+    </div>
+</section>
+
+</body>
+</html>
+
